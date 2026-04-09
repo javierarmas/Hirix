@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/job_alerts}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+adzuna:
+  base-url: ${ADZUNA_BASE_URL:https://api.adzuna.com}
+  app-id: ${ADZUNA_APP_ID:}
+  app-key: ${ADZUNA_APP_KEY:}
+  country: ${ADZUNA_COUNTRY:mx}
+  default-results-per-page: ${ADZUNA_RESULTS_PER_PAGE:20}
+
+ingestion:
+  scheduler:
+    fixed-delay-ms: ${INGESTION_FIXED_DELAY_MS:10000}
+    queries:
+      - "software engineer guadalajara"
+      - "software engineer remote mexico"
+      - "backend engineer guadalajara"
+      - "backend engineer mexico remote"
