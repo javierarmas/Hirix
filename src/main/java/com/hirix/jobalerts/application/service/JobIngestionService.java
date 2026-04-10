@@ -91,6 +91,10 @@ public class JobIngestionService {
 
     String normalized = applyUrl.trim().toLowerCase();
 
+    if(normalized.contains("/land/ad/")) {
+        normalized = normalized.replace("/land/ad/", "/details/");
+    }
+
     int index = normalized.indexOf("?");
     if (index != -1) {
         normalized = normalized.substring(0, index);
