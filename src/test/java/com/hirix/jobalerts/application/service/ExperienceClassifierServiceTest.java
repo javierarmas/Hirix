@@ -11,31 +11,37 @@ class ExperienceClassifierServiceTest {
 
     @Test
     void shouldClassifyPlusPattern() {
-        ExperienceLevel level = classifier.classifyFromDescription("We need 2+ years of experience with Java.");
+        ExperienceLevel level = classifier.classify(null, "We need 2+ years of experience with Java.");
         assertThat(level).isEqualTo(ExperienceLevel.MID);
     }
 
     @Test
     void shouldClassifySingleYearsPattern() {
-        ExperienceLevel level = classifier.classifyFromDescription("Requires 3 years in backend development.");
+        ExperienceLevel level = classifier.classify(null, "Requires 3 years in backend development.");
         assertThat(level).isEqualTo(ExperienceLevel.MID);
     }
 
     @Test
     void shouldClassifyRangePattern() {
-        ExperienceLevel level = classifier.classifyFromDescription("Candidates should have 5-7 years of experience.");
+        ExperienceLevel level = classifier.classify(null, "Candidates should have 5-7 years of experience.");
         assertThat(level).isEqualTo(ExperienceLevel.SENIOR);
     }
 
     @Test
     void shouldClassifyJuniorRange() {
-        ExperienceLevel level = classifier.classifyFromDescription("0-2 years experience");
+        ExperienceLevel level = classifier.classify(null, "0-2 years experience");
         assertThat(level).isEqualTo(ExperienceLevel.JUNIOR);
     }
 
     @Test
     void shouldReturnUnknownWhenNoPatternIsFound() {
-        ExperienceLevel level = classifier.classifyFromDescription("Strong communication skills required.");
+        ExperienceLevel level = classifier.classify(null, "Strong communication skills required.");
         assertThat(level).isEqualTo(ExperienceLevel.UNKNOWN);
+    }
+
+    @Test
+    void shouldClassifyFromTitle() {
+        ExperienceLevel level = classifier.classify("Senior Java Engineer", null);
+        assertThat(level).isEqualTo(ExperienceLevel.SENIOR);
     }
 }

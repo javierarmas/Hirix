@@ -34,7 +34,7 @@ public class JobIngestionService {
 
             boolean alreadyExists = jobPostingRepository.existsByApplyUrl(applyUrl);
             JobPosting mapped = mapToJobPosting(rawJob, applyUrl);
-            mapped.setExperienceLevel(experienceClassifierService.classifyFromDescription(mapped.getDescription()));
+            mapped.setExperienceLevel(experienceClassifierService.classify(mapped.getTitle(), mapped.getDescription()));
             if (!jobFilterService.isAllowed(mapped)) {
                 continue;
             }
