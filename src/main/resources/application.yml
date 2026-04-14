@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/job_alerts}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,10 +10,17 @@ spring:
 
 adzuna:
   base-url: ${ADZUNA_BASE_URL:https://api.adzuna.com}
-  app-id: ${ADZUNA_APP_ID:}
-  app-key: ${ADZUNA_APP_KEY:}
+  app-id: ${ADZUNA_APP_ID}
+  app-key: ${ADZUNA_APP_KEY}
   country: ${ADZUNA_COUNTRY:mx}
   default-results-per-page: ${ADZUNA_RESULTS_PER_PAGE:20}
+
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  from-email: ${SENDGRID_FROM_EMAIL}
+
+alerts:
+  to-email: ${ALERT_TO_EMAIL}
 
 ingestion:
   scheduler:

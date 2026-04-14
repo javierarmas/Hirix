@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,10 @@ public class JobIngestionService {
     private final JobFilterService jobFilterService;
     private final JobPostingService jobPostingService;
     private final JobPostingRepository jobPostingRepository;
+    private final EmailService emailService;
+
+    @Value("${alerts.to-email}")
+    private String alertEmail;
 
     public int ingest(String query) {
         List<RawAdzunaJob> rawJobs = jobFetchService.fetchRawJobs(query);
@@ -48,9 +53,15 @@ public class JobIngestionService {
                         safeValue(saved.getCompany()),
                         safeValue(saved.getLocation()),
                         saved.getExperienceLevel(),
-                        safeValue(saved.getApplyUrl())
-                );
+                        safeValue(saved.getApplyUrl()));
             }
+        }
+
+        if (newJobs > 0) {
+            emailService.sendEmail(
+                    alertEmail,
+                    "Nuevas vacantes encontradas ",
+                    "Se encontraron " + newJobs + " nuevas vacantes.");
         }
 
         return newJobs;
@@ -85,27 +96,27 @@ public class JobIngestionService {
     }
 
     private String normalizeApplyUrl(String applyUrl) {
-    if (applyUrl == null) {
-        return null;
+        if (applyUrl == null) {
+            return null;
+        }
+
+        String normalized = applyUrl.trim().toLowerCase();
+
+        if (normalized.contains("/land/ad/")) {
+            normalized = normalized.replace("/land/ad/", "/details/");
+        }
+
+        int index = normalized.indexOf("?");
+        if (index != -1) {
+            normalized = normalized.substring(0, index);
+        }
+
+        if (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+
+        return normalized.isEmpty() ? null : normalized;
     }
-
-    String normalized = applyUrl.trim().toLowerCase();
-
-    if(normalized.contains("/land/ad/")) {
-        normalized = normalized.replace("/land/ad/", "/details/");
-    }
-
-    int index = normalized.indexOf("?");
-    if (index != -1) {
-        normalized = normalized.substring(0, index);
-    }
-
-    if (normalized.endsWith("/")) {
-        normalized = normalized.substring(0, normalized.length() - 1);
-    }
-
-    return normalized.isEmpty() ? null : normalized;
-}
 
     private String safeValue(String value) {
         return value == null || value.isBlank() ? "Unknown" : value;
